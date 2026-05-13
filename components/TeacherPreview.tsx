@@ -1,13 +1,37 @@
 import React from 'react';
-import { LocationData } from '../types';
+import { LocationData, SymbolType } from '../types';
 import Button from './Button';
 import { getIcon } from './Inventory';
-import { Check, X, BookOpen, HelpCircle, LayoutGrid, TextCursorInput } from 'lucide-react';
+import { Check, X, BookOpen, HelpCircle, LayoutGrid, TextCursorInput, Eye, Puzzle, PenLine, ClipboardList } from 'lucide-react';
 
 interface Props { locations: LocationData[]; onClose: () => void; }
 
+const SLOTS: { meaning: string; correct: SymbolType; hint: string }[] = [
+  { meaning: 'Memory & Courage',  correct: 'Anchor',   hint: '"A sunken ship lies below me. On December 7, 1941, the world changed forever."' },
+  { meaning: 'Fire & Creation',   correct: 'Flame',    hint: '"I have been erupting since 1983. The goddess Pele lives deep inside my craters."' },
+  { meaning: 'Surf & Spirit',     correct: 'Waves',    hint: '"Duke Kahanamoku surfed my golden waves. Diamond Head stands tall behind me."' },
+  { meaning: 'Sky & Sacred',      correct: 'Star',     hint: '"My name means white mountain. Observatories look up to the stars from my peak."' },
+  { meaning: 'Ocean & Life',      correct: 'Droplets', hint: '"I was born inside a volcanic crater. Honu sea turtles swim in my clear blue waters."' },
+  { meaning: 'Wild & Wonder',     correct: 'Leaf',     hint: '"My cliffs rise 1,200 meters. Jurassic Park was filmed along my shores."' },
+];
+
+const REFLECTION_GOALS = [
+  "I can name the main landmarks of Hawaii.",
+  "I can explain what Pearl Harbor is and why it is important.",
+  "I can describe what makes Hawaii's volcanoes special.",
+  "I can explain what the Aloha spirit means.",
+  "I can understand the main words from this chapter.",
+];
+
+const SectionHeader: React.FC<{ icon: React.ReactNode; title: string; count?: string }> = ({ icon, title, count }) => (
+  <h3 className="flex items-center gap-2 text-base font-bold text-yellow-400 mb-4 border-b border-slate-700/60 pb-2">
+    {icon} {title} {count && <span className="text-slate-500 font-normal text-sm">({count})</span>}
+  </h3>
+);
+
 const TeacherPreview: React.FC<Props> = ({ locations, onClose }) => (
   <div className="min-h-screen bg-slate-950 text-slate-100">
+    {/* Sticky header */}
     <div className="sticky top-0 z-10 bg-slate-950/95 backdrop-blur border-b border-yellow-900/50 px-4 py-3 flex justify-between items-center shadow-lg">
       <div>
         <h1 className="text-xl font-serif text-yellow-400">Teacher Preview</h1>
@@ -17,7 +41,10 @@ const TeacherPreview: React.FC<Props> = ({ locations, onClose }) => (
         <X className="w-4 h-4" /> Exit Preview
       </Button>
     </div>
+
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-12">
+
+      {/* ── LOCATION CARDS ── */}
       {locations.map((loc, locIdx) => (
         <div key={loc.id} className="bg-slate-900 rounded-2xl border border-slate-700 overflow-hidden shadow-xl">
           <div className="relative h-36 overflow-hidden">
@@ -31,8 +58,10 @@ const TeacherPreview: React.FC<Props> = ({ locations, onClose }) => (
             </div>
           </div>
           <div className="p-6 space-y-8">
+
+            {/* Reading Text */}
             <section>
-              <h3 className="flex items-center gap-2 text-base font-bold text-yellow-400 mb-4 border-b border-slate-700/60 pb-2"><BookOpen className="w-4 h-4" /> Reading Text</h3>
+              <SectionHeader icon={<BookOpen className="w-4 h-4" />} title="Reading Text" />
               <div className="space-y-2 text-sm">
                 {loc.readingText.map((s, i) => {
                   const isMystery = s === loc.mysterySentence;
@@ -46,8 +75,10 @@ const TeacherPreview: React.FC<Props> = ({ locations, onClose }) => (
                 })}
               </div>
             </section>
+
+            {/* Questions */}
             <section>
-              <h3 className="flex items-center gap-2 text-base font-bold text-yellow-400 mb-4 border-b border-slate-700/60 pb-2"><HelpCircle className="w-4 h-4" /> Questions ({loc.questions.length})</h3>
+              <SectionHeader icon={<HelpCircle className="w-4 h-4" />} title="Questions" count={`${loc.questions.length}`} />
               <div className="space-y-3">
                 {loc.questions.map((q, qi) => (
                   <div key={q.id} className="bg-slate-800/70 rounded-xl p-4 border border-slate-700/50">
@@ -65,8 +96,10 @@ const TeacherPreview: React.FC<Props> = ({ locations, onClose }) => (
                 ))}
               </div>
             </section>
+
+            {/* Sentence Builder */}
             <section>
-              <h3 className="flex items-center gap-2 text-base font-bold text-yellow-400 mb-4 border-b border-slate-700/60 pb-2"><LayoutGrid className="w-4 h-4" /> Sentence Builder</h3>
+              <SectionHeader icon={<LayoutGrid className="w-4 h-4" />} title="Sentence Builder" />
               <div className="space-y-3">
                 {loc.sentenceBuilderTasks.map((t, ti) => (
                   <div key={t.id} className="bg-slate-800/70 rounded-xl p-4 border border-slate-700/50">
@@ -83,8 +116,10 @@ const TeacherPreview: React.FC<Props> = ({ locations, onClose }) => (
                 ))}
               </div>
             </section>
+
+            {/* Missing Words */}
             <section>
-              <h3 className="flex items-center gap-2 text-base font-bold text-yellow-400 mb-4 border-b border-slate-700/60 pb-2"><TextCursorInput className="w-4 h-4" /> Missing Words</h3>
+              <SectionHeader icon={<TextCursorInput className="w-4 h-4" />} title="Missing Words" />
               <div className="space-y-3">
                 {loc.missingWordsTasks.map((t, ti) => (
                   <div key={t.id} className="bg-slate-800/70 rounded-xl p-4 border border-slate-700/50">
@@ -104,6 +139,135 @@ const TeacherPreview: React.FC<Props> = ({ locations, onClose }) => (
           </div>
         </div>
       ))}
+
+      {/* ── END ACTIVITIES DIVIDER ── */}
+      <div className="flex items-center gap-4 my-4">
+        <div className="flex-1 h-px bg-yellow-900/50" />
+        <span className="text-yellow-600 font-serif text-lg">End Activities</span>
+        <div className="flex-1 h-px bg-yellow-900/50" />
+      </div>
+
+      {/* ── GATE OF SECRETS ── */}
+      <div className="bg-slate-900 rounded-2xl border border-slate-700 overflow-hidden shadow-xl">
+        <div className="bg-slate-800 px-6 py-4 border-b border-slate-700 flex items-center gap-3">
+          <Eye className="w-5 h-5 text-yellow-400" />
+          <div>
+            <h2 className="text-xl font-serif text-yellow-400">The Gate of Secrets</h2>
+            <p className="text-slate-400 text-xs">Students read all 6 texts and click the mystery sentence in each.</p>
+          </div>
+        </div>
+        <div className="p-6 space-y-3">
+          {locations.map((loc, i) => (
+            <div key={loc.id} className="bg-slate-800/70 rounded-xl p-4 border border-yellow-900/40">
+              <p className="text-yellow-500 text-xs font-bold uppercase tracking-wide mb-2">{i + 1}. {loc.name}</p>
+              <p className="text-yellow-200 italic text-sm">"{loc.mysterySentence}"</p>
+              <p className="text-slate-500 text-xs mt-2">Type: {loc.mysterySentence.startsWith('Some') || loc.mysterySentence.startsWith('Old') ? 'belief / legend' : 'unknown / unexplained'}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── FINAL CHALLENGE ── */}
+      <div className="bg-slate-900 rounded-2xl border border-slate-700 overflow-hidden shadow-xl">
+        <div className="bg-slate-800 px-6 py-4 border-b border-slate-700 flex items-center gap-3">
+          <Puzzle className="w-5 h-5 text-yellow-400" />
+          <div>
+            <h2 className="text-xl font-serif text-yellow-400">Honu's Final Challenge — Symbol Matching</h2>
+            <p className="text-slate-400 text-xs">Students match each symbol to the correct landmark hint.</p>
+          </div>
+        </div>
+        <div className="p-6 space-y-3">
+          {SLOTS.map((slot) => (
+            <div key={slot.meaning} className="bg-slate-800/70 rounded-xl p-4 border border-slate-700/50 flex items-start gap-4">
+              <div className="w-12 h-12 shrink-0 rounded-full bg-emerald-950 border border-emerald-800 flex items-center justify-center">
+                {getIcon(slot.correct, 'w-6 h-6')}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-yellow-400 font-bold text-sm">{slot.meaning}</p>
+                  <span className="text-slate-500 text-xs">→</span>
+                  <span className="text-green-400 text-xs font-semibold bg-green-900/30 px-2 py-0.5 rounded border border-green-800/50">{slot.correct}</span>
+                </div>
+                <p className="text-slate-300 text-sm italic">{slot.hint}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── WRITING TASK ── */}
+      <div className="bg-slate-900 rounded-2xl border border-slate-700 overflow-hidden shadow-xl">
+        <div className="bg-slate-800 px-6 py-4 border-b border-slate-700 flex items-center gap-3">
+          <PenLine className="w-5 h-5 text-yellow-400" />
+          <div>
+            <h2 className="text-xl font-serif text-yellow-400">Aloha Wish — Writing Task</h2>
+            <p className="text-slate-400 text-xs">Students write 2–3 sentences about their Aloha Wish.</p>
+          </div>
+        </div>
+        <div className="p-6">
+          <div className="bg-slate-800/70 rounded-xl p-5 border border-slate-700/50">
+            <p className="text-slate-400 text-xs uppercase tracking-wide mb-3 font-semibold">Prompt shown to students:</p>
+            <p className="text-amber-300 italic text-lg font-serif">"If I visited Hawaiʻi, I would... Because..."</p>
+            <div className="mt-4 pt-4 border-t border-slate-700 space-y-1">
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Requirements:</p>
+              <p className="text-slate-300 text-sm">• Minimum 10 characters (button disabled until met)</p>
+              <p className="text-slate-300 text-sm">• 2–3 sentences recommended</p>
+              <p className="text-slate-300 text-sm">• Free writing — no word limit</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── EVALUATION & REFLECTION ── */}
+      <div className="bg-slate-900 rounded-2xl border border-slate-700 overflow-hidden shadow-xl">
+        <div className="bg-slate-800 px-6 py-4 border-b border-slate-700 flex items-center gap-3">
+          <ClipboardList className="w-5 h-5 text-yellow-400" />
+          <div>
+            <h2 className="text-xl font-serif text-yellow-400">Evaluation & Reflection</h2>
+            <p className="text-slate-400 text-xs">Self-assessment shown to students at the end.</p>
+          </div>
+        </div>
+        <div className="p-6 space-y-6">
+
+          {/* Checklist */}
+          <div>
+            <p className="text-slate-400 text-xs uppercase tracking-wide font-semibold mb-3">Evaluation Checklist — students tick ✓ / ~ / ✗</p>
+            <div className="space-y-2">
+              {REFLECTION_GOALS.map((g, i) => (
+                <div key={i} className="flex items-center gap-3 bg-slate-800/70 rounded-lg px-4 py-2.5 border border-slate-700/50">
+                  <span className="text-slate-500 text-xs w-5 text-right shrink-0">{i + 1}.</span>
+                  <p className="text-slate-200 text-sm flex-1">{g}</p>
+                  <div className="flex gap-1.5 shrink-0">
+                    <span className="w-7 h-7 rounded border border-green-700/50 bg-green-900/20 flex items-center justify-center text-green-400 text-xs font-bold">✓</span>
+                    <span className="w-7 h-7 rounded border border-yellow-700/50 bg-yellow-900/20 flex items-center justify-center text-yellow-400 text-xs font-bold">~</span>
+                    <span className="w-7 h-7 rounded border border-red-700/50 bg-red-900/20 flex items-center justify-center text-red-400 text-xs font-bold">✗</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Reflection question */}
+          <div className="bg-slate-800/70 rounded-xl p-4 border border-slate-700/50">
+            <p className="text-slate-400 text-xs uppercase tracking-wide font-semibold mb-2">Reflection Question</p>
+            <p className="text-amber-300 italic">"What am I afraid I might forget for the test?"</p>
+            <p className="text-slate-500 text-xs mt-2">Open text field — minimum 5 characters required</p>
+          </div>
+
+          {/* Self-rating */}
+          <div className="bg-slate-800/70 rounded-xl p-4 border border-slate-700/50">
+            <p className="text-slate-400 text-xs uppercase tracking-wide font-semibold mb-3">Self-Rating Scale</p>
+            <p className="text-slate-400 text-xs mb-3">How well did you understand this chapter? (1 = not at all, 10 = very well)</p>
+            <div className="flex gap-2 flex-wrap">
+              {Array.from({ length: 10 }, (_, i) => i + 1).map(n => (
+                <div key={n} className="w-10 h-10 rounded-lg border border-slate-600 bg-slate-700 flex items-center justify-center text-slate-300 font-bold text-sm">{n}</div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </div>
 );
