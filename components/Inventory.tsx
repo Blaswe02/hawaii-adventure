@@ -5,6 +5,7 @@ import { Anchor, Flame, Waves, Star, Droplets, Leaf } from 'lucide-react';
 interface InventoryProps {
   symbols: SymbolType[];
   onSymbolsClick: () => void;
+  spiritName?: string;
 }
 
 const getIcon = (type: SymbolType, size = 'w-4 h-4') => {
@@ -20,10 +21,10 @@ const getIcon = (type: SymbolType, size = 'w-4 h-4') => {
 
 const ALL: SymbolType[] = ['Anchor', 'Flame', 'Waves', 'Star', 'Droplets', 'Leaf'];
 
-const Inventory: React.FC<InventoryProps> = ({ symbols, onSymbolsClick }) => (
+const Inventory: React.FC<InventoryProps> = ({ symbols, onSymbolsClick, spiritName }) => (
   <div className="fixed top-0 left-0 right-0 bg-emerald-950/90 border-b border-emerald-800 p-2 z-50 flex justify-between items-center backdrop-blur-sm shadow-lg">
     <div className="text-emerald-100 font-serif font-bold text-base hidden sm:block pl-2">
-      Honu's Quest
+      {spiritName ? `${spiritName}'s Quest` : "Honu's Quest"}
     </div>
     <div className="flex gap-1.5 items-center">
       <span

@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { ViewState, PlayerState } from './types';
+import { ViewState, PlayerState, SpiritAnimal } from './types';
 import { LOCATIONS } from './data';
+import { SPIRIT_ANIMALS } from './spiritAnimals';
+import SpiritAnimalSelect from './components/SpiritAnimalSelect';
 import Intro from './components/Intro';
 import MapHub from './components/MapHub';
 import LocationLevel from './components/LocationLevel';
@@ -16,8 +18,8 @@ const TEACHER_PASSCODE = 'HAWAII';
 const SECRET_CLICKS = 5;
 
 const App: React.FC = () => {
-  const [view, setView] = useState<ViewState>('intro');
-  const [player, setPlayer] = useState<PlayerState>({ inventory: [], completedLocations: [], wish: '' });
+  const [view, setView] = useState<ViewState>('spirit_select');
+  const [player, setPlayer] = useState<PlayerState>({ inventory: [], completedLocations: [], wish: '', spiritAnimal: null });
   const [activeId, setActiveId] = useState<string | null>(null);
   const [clickCount, setClickCount] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -27,6 +29,12 @@ const App: React.FC = () => {
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeLocation = LOCATIONS.find(l => l.id === activeId);
+  const spiritInfo = SPIRIT_ANIMALS.find(a => a.id === player.spiritAnimal);
+
+  const handleSpiritSelect = (animal: SpiritAnimal) => {
+    setPlayer(p => ({ ...p, spiritAnimal: animal }));
+    setView('intro');
+  };
 
   const handleSymbolsClick = () => {
     if (resetTimer.current) clearTimeout(resetTimer.current);
@@ -45,8 +53,29 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-500 selection:text-white">
-      {view !== 'intro' && view !== 'ending' && (
-        <Inventory symbols={player.inventory} onSymbolsClick={handleSymbolsClick} />
+      {view !== 'spirit_select' && view !== 'intro' && view !== 'ending' && (
+        <Inventory symbols={player.inventory} onSymbolsClick={handleSymbolsClick} spiritName={spiritInfo?.name} />
+      )}
+
+      {/* Floating Spirit Animal Companion */}
+      {spiritInfo && !['spirit_select','intro','ending'].includes(view) && (
+        <div className="fixed bottom-24 right-3 z-40 flex flex-col items-center pointer-events-none select-none">
+          <div style={{ filter: `drop-shadow(0 0 12px ${spiritInfo.glowColor})` }}
+            className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center">
+            <img src={spiritInfo.image} alt={spiritInfo.name} className="w-full h-full object-contain"
+              onError={e => {
+                const fb: Record<string,string> = { deer:'🦌', gecko:'🦎', owl:'🦉', turtle:'🐢', fox:'🦊' };
+                const el = e.target as HTMLImageElement;
+                el.style.display = 'none';
+                const s = document.createElement('span'); s.style.fontSize='48px'; s.textContent = fb[spiritInfo.id]||'✨';
+                el.parentElement?.appendChild(s);
+              }} />
+          </div>
+          <span className="text-xs font-serif mt-0.5 font-semibold"
+            style={{ color: spiritInfo.glowColor.replace('0.6)','1)') }}>
+            {spiritInfo.name}
+          </span>
+        </div>
       )}
 
       {/* Teacher passcode modal */}
@@ -67,7 +96,15 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {view === 'intro' && <Intro onComplete={() => setView('map')} />}
+      {view === 'spirit_select' && <SpiritAnimalSelect onSelect={handleSpiritSelect} />}
+      {view === 'intro' && (
+        <Intro
+          onComplete={() => setView('map')}
+          spiritName={spiritInfo?.name ?? 'Honu'}
+          spiritImage={spiritInfo?.image ?? 'https://picsum.photos/seed/sea-turtle-hawaii-honu/400/400'}
+          spiritDescription={spiritInfo?.description ?? 'Guardian of the Hawaiian islands.'}
+        />
+      )}
 
       {view === 'map' && (
         <MapHub locations={LOCATIONS} completedLocations={player.completedLocations}
