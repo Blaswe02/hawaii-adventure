@@ -5,7 +5,7 @@ export const LOCATIONS: LocationData[] = [
     id: 'pearlharbor',
     name: 'Pearl Harbor',
     shortDescription: 'A surprise attack. A sunken ship. A memory.',
-    introImage: 'https://picsum.photos/seed/pearl-harbor-hawaii/900/600',
+    introImage: '/pearlharbor.jpg',
     readingText: [
       "Pearl Harbor is a naval base on the island of Oahu, Hawaii.",
       "On December 7, 1941, Japan attacked the American naval base.",
@@ -95,7 +95,7 @@ export const LOCATIONS: LocationData[] = [
     id: 'volcanoes',
     name: 'Volcanoes National Park',
     shortDescription: 'Fire and lava. Pele and power.',
-    introImage: 'https://picsum.photos/seed/hawaii-volcano-lava/900/600',
+    introImage: '/volcanoesnationalpark.jpg',
     readingText: [
       "Hawaii Volcanoes National Park is on the Big Island of Hawaii.",
       "It is home to two of the world's most active volcanoes.",
@@ -185,7 +185,7 @@ export const LOCATIONS: LocationData[] = [
     id: 'waikiki',
     name: 'Waikiki Beach',
     shortDescription: 'Golden sand. Blue waves. The birthplace of surfing.',
-    introImage: 'https://picsum.photos/seed/waikiki-beach-surf/900/600',
+    introImage: '/waikikibeach.jpg',
     readingText: [
       "Waikiki Beach is one of the most famous beaches in the world.",
       "It is located in Honolulu, the capital city of Hawaii.",
@@ -275,7 +275,7 @@ export const LOCATIONS: LocationData[] = [
     id: 'maunakea',
     name: 'Mauna Kea',
     shortDescription: 'White mountain. Sacred peak. Stars above.',
-    introImage: 'https://picsum.photos/seed/mauna-kea-summit/900/600',
+    introImage: '/maunakea.jpg',
     readingText: [
       "Mauna Kea is the highest mountain in Hawaii.",
       "It is a dormant volcano on the Big Island.",
@@ -365,7 +365,7 @@ export const LOCATIONS: LocationData[] = [
     id: 'hanauma',
     name: 'Haunauma Bay',
     shortDescription: 'Volcanic crater. Colorful fish. Sacred turtles.',
-    introImage: 'https://picsum.photos/seed/hanauma-bay-turtle/900/600',
+    introImage: '/haunaumabay.jpg',
     readingText: [
       "Haunauma Bay is a beautiful bay on the island of Oahu.",
       "It was formed inside an ancient volcanic crater.",
@@ -455,7 +455,7 @@ export const LOCATIONS: LocationData[] = [
     id: 'napali',
     name: 'Na Pali Coast',
     shortDescription: 'Wild cliffs. Hidden valleys. Jurassic scenery.',
-    introImage: 'https://picsum.photos/seed/napali-coast-cliffs/900/600',
+    introImage: '/napalicoast.jpg',
     readingText: [
       "The Na Pali Coast is on the island of Kauai.",
       "It is one of the most beautiful and wild places in Hawaii.",
